@@ -1517,6 +1517,46 @@ const [send, receive] = containerTransform({ duration: 1000 });
 </style>
 ```
 
+## Tooltip
+
+Minimal demo:
+
+```svelte
+<Tooltip text="Tooltip!">
+  <Button variant="filled">Hover me</Button>
+</Tooltip>
+```
+
+Full demo:
+
+```use
+Tooltip
+Button
+```
+
+```ts
+let position = $state("center");
+let side = $state("top");
+```
+
+```svelte
+<label>
+  <Arrows list={["bottom", "top", "left", "right"]} bind:value={side} initialIndex={1} />
+  {side[0].toUpperCase() + side.slice(1)}
+</label>
+<label>
+  <Arrows list={["start", "center", "end"]} bind:value={position} initialIndex={1} />
+  {position[0].toUpperCase() + position.slice(1)}
+</label>
+{#snippet demo()}
+  <div>
+    <Tooltip text="Tooltip!" {side} {position}>
+      <Button variant="filled">Hover me</Button>
+    </Tooltip>
+  </div>
+{/snippet}
+```
+
 ## Layer
 
 Minimal demo:
@@ -1652,7 +1692,15 @@ let mode: "normal" | "animatable" | "animatable small" = $state("normal");
       <path class="shape" {d} fill="var(--m3c-primary)" />
     </svg>
   {:else}
-    <p style:display="flex" style:align-items="center" style:justify-content="center" style:height="4rem" style:margin="0">this shape-settings combination is unavailable</p>
+    <p
+      style:display="flex"
+      style:align-items="center"
+      style:justify-content="center"
+      style:height="4rem"
+      style:margin="0"
+    >
+      this shape-settings combination is unavailable
+    </p>
   {/if}
 {/snippet}
 
