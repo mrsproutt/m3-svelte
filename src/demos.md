@@ -156,8 +156,8 @@ Full demo:
 
 ```use
 SplitButton
-Menu
-MenuItem
+ExpressiveMenu
+ExpressiveMenuItem
 ```
 
 ```ts
@@ -200,11 +200,11 @@ let iconType: "none" | "left" | "full" = $state("none");
         <Icon icon={iconCircle} />
       {/if}
       {#snippet menu()}
-        <Menu>
-          <MenuItem icon={iconCircle} onclick={() => {}}>Alpha</MenuItem>
-          <MenuItem icon={iconSquare} onclick={() => {}}>Beta</MenuItem>
-          <MenuItem icon={iconTriangle} onclick={() => {}}>Charlie</MenuItem>
-        </Menu>
+        <ExpressiveMenu>
+          <ExpressiveMenuItem leadingIcon={iconCircle} label="Alpha" />
+          <ExpressiveMenuItem leadingIcon={iconSquare} label="Beta" />
+          <ExpressiveMenuItem leadingIcon={iconTriangle} label="Charlie" />
+        </ExpressiveMenu>
       {/snippet}
     </SplitButton>
   </div>
@@ -445,6 +445,83 @@ let icons = $state(false);
     <MenuItem icon={icons ? iconSquare : undefined} onclick={() => {}}>Beta</MenuItem>
     <MenuItem icon={icons ? iconTriangle : undefined} disabled onclick={() => {}}>Charlie</MenuItem>
   </Menu>
+{/snippet}
+```
+
+## Expressive Menu
+
+Minimal demo:
+
+```svelte
+<ExpressiveMenu>
+  <ExpressiveMenuItem leadingIcon={iconCircle} label="Alpha" />
+  <ExpressiveMenuItem leadingIcon={iconSquare} label="Beta" />
+  <ExpressiveMenuItem leadingIcon={iconTriangle} label="Charlie" />
+</ExpressiveMenu>
+```
+
+Full demo:
+
+```use
+ExpressiveMenu
+ExpressiveMenuItem
+ExpressiveMenuGroup
+MenuDivider
+```
+
+```ts
+import iconCheck from "@ktibow/iconset-material-symbols/check";
+
+let vibrant = $state(false);
+let item1 = $state(true);
+let item2 = $state(false);
+let item3 = $state(false);
+```
+
+```svelte
+<label>
+  <Switch bind:checked={vibrant} />
+  {vibrant ? "Vibrant" : "Standard"}
+</label>
+{#snippet demo()}
+  <ExpressiveMenuGroup>
+    <ExpressiveMenu {vibrant}>
+      <ExpressiveMenuItem label="Circle" selected leadingIcon={iconCircle} />
+      <MenuDivider />
+      <ExpressiveMenuItem label="Square" leadingIcon={iconSquare}>
+        {#snippet trailing()}
+          ⌘C
+        {/snippet}
+      </ExpressiveMenuItem>
+      <ExpressiveMenuItem label="Triangle" leadingIcon={iconTriangle} disabled />
+    </ExpressiveMenu>
+    <ExpressiveMenu {vibrant}>
+      <ExpressiveMenuItem label="Submenu" leadingIcon={iconCircle}>
+        {#snippet submenu()}
+          <ExpressiveMenu {vibrant}>
+            <ExpressiveMenuItem
+              label="Item 1"
+              selected={item1}
+              trailingIcon={item1 ? iconCheck : undefined}
+              onclick={() => (item1 = !item1)}
+            />
+            <ExpressiveMenuItem
+              label="Item 2"
+              selected={item2}
+              trailingIcon={item2 ? iconCheck : undefined}
+              onclick={() => (item2 = !item2)}
+            />
+            <ExpressiveMenuItem
+              label="Item 3"
+              selected={item3}
+              trailingIcon={item3 ? iconCheck : undefined}
+              onclick={() => (item3 = !item3)}
+            />
+          </ExpressiveMenu>
+        {/snippet}
+      </ExpressiveMenuItem>
+    </ExpressiveMenu>
+  </ExpressiveMenuGroup>
 {/snippet}
 ```
 
@@ -1654,7 +1731,15 @@ let mode: "normal" | "animatable" | "animatable small" = $state("normal");
       <path class="shape" {d} fill="var(--m3c-primary)" />
     </svg>
   {:else}
-    <p style:display="flex" style:align-items="center" style:justify-content="center" style:height="4rem" style:margin="0">this shape-settings combination is unavailable</p>
+    <p
+      style:display="flex"
+      style:align-items="center"
+      style:justify-content="center"
+      style:height="4rem"
+      style:margin="0"
+    >
+      this shape-settings combination is unavailable
+    </p>
   {/if}
 {/snippet}
 
