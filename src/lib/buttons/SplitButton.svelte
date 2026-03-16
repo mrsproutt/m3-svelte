@@ -8,6 +8,7 @@
     variant,
     x = "inner",
     y = "down",
+    menuOpen = $bindable(false),
     children,
     menu,
     ...extra
@@ -15,13 +16,14 @@
     variant: "elevated" | "filled" | "tonal" | "outlined";
     x?: "inner" | "right";
     y?: "down" | "up";
+    menuOpen?: boolean;
     children: Snippet;
-    menu: Snippet;
+    menu: Snippet<[boolean]>;
   } & ButtonAttrs = $props();
 
   const autoclose = (node: HTMLDetailsElement) => {
     const close = (e: Event) => {
-      if (e.target instanceof Element && e.target.closest("summary")) return;
+      if (node.contains(e.target as Element)) return;
 
       node.open = false;
     };
@@ -38,11 +40,11 @@
   <button type="button" class="split m3-layer" {...extra}>
     {@render children()}
   </button>
-  <details class="align-{x} align-{y}" use:autoclose>
+  <details class="align-{x} align-{y}" bind:open={menuOpen} use:autoclose>
     <summary class="split m3-layer">
       <Icon icon={iconExpand} size={22} />
     </summary>
-    {@render menu()}
+    {@render menu(menuOpen)}
   </details>
 </div>
 
@@ -96,6 +98,7 @@
     cursor: pointer;
     background-color: transparent;
     border: none;
+    user-select: none;
 
     position: relative;
     transition:

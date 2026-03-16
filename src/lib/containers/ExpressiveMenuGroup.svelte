@@ -21,6 +21,7 @@
 
   .menu-group > :global(.m3-container) {
     border-radius: var(--m3-shape-small);
+    width: auto;
   }
 
   .menu-group > :global(.m3-container):first-child {

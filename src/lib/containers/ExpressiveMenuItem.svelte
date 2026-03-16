@@ -15,9 +15,8 @@
     onclick,
     label,
     details,
-    submenuOpen = false,
+    submenuOpen = $bindable(false),
     badge,
-    onSubmenuClose,
     submenu,
     trailing,
   }: {
@@ -29,31 +28,31 @@
     details?: string;
     submenuOpen?: boolean;
     badge?: Snippet;
-    submenu?: Snippet;
+    submenu?: Snippet<[boolean]>;
     trailing?: Snippet;
-    onSubmenuClose?: () => void;
     onclick?: (e: MouseEvent) => unknown;
   } = $props();
 
   const autoclose = (node: HTMLDetailsElement) => {
-    const toggle = () => (submenuOpen = node.open);
-
     const close = (e: MouseEvent) => {
-      if (e.target instanceof Element && node.contains(e.target)) return;
+      if (node.contains(e.target as Element)) return;
 
-      node.open = false;
       submenuOpen = false;
+    };
+    const click = (e: MouseEvent) => {
+      e.preventDefault();
+      if (node.querySelector("& > summary") === e.target) return (submenuOpen = !submenuOpen);
 
-      if (onSubmenuClose) onSubmenuClose();
+      close(e);
     };
 
     window.addEventListener("click", close);
-    node.addEventListener("toggle", toggle);
+    node.addEventListener("click", click);
 
     return {
       destroy() {
         window.removeEventListener("click", close);
-        node.removeEventListener("toggle", toggle);
+        node.removeEventListener("click", click);
       },
     };
   };
@@ -107,12 +106,12 @@
 
 {#if submenu}
   <!-- measure distance from page sides -->
-  <details class="align-x} align-y}" open={submenuOpen} use:autoclose>
+  <details class="align-x} align-y}" open use:autoclose>
     <summary class="item m3-layer">
       {@render item()}
     </summary>
 
-    {@render submenu()}
+    {@render submenu(submenuOpen)}
   </details>
 {:else}
   <button type="button" class="item m3-layer" class:selected {disabled} {onclick}>
@@ -124,7 +123,6 @@
   .item {
     @apply --m3-label-large;
     @apply --m3-focus-inward;
-    @apply --m3-label-large;
     border-radius: var(--m3-shape-extra-small);
     display: flex;
     align-items: center;
@@ -162,12 +160,14 @@
     color: var(--m3-menuitem-on-selected);
   }
 
-  .item:first-of-type {
+  .item:first-child,
+  details:first-child > .item {
     border-top-left-radius: var(--m3-shape-medium);
     border-top-right-radius: var(--m3-shape-medium);
   }
 
-  .item:last-of-type {
+  .item:last-child,
+  details > .item {
     border-bottom-left-radius: var(--m3-shape-medium);
     border-bottom-right-radius: var(--m3-shape-medium);
   }
@@ -179,8 +179,18 @@
     text-align: left;
   }
 
+  .label > span:first-child:has(+ span:nth-child(2)) {
+    margin-bottom: -1px;
+  }
+
   .label > span:nth-child(2) {
-    opacity: 0.5;
+    @apply --m3-label-medium;
+    color: var(--m3-menuitem-icon);
+    margin-top: -1px;
+  }
+
+  .item.selected .label > span:nth-child(2) {
+    color: var(--m3-menuitem-on-selected);
   }
 
   .icon {

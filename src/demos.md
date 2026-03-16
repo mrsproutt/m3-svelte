@@ -199,8 +199,8 @@ let iconType: "none" | "left" | "full" = $state("none");
       {:else}
         <Icon icon={iconCircle} />
       {/if}
-      {#snippet menu()}
-        <ExpressiveMenu>
+      {#snippet menu(open)}
+        <ExpressiveMenu {open}>
           <ExpressiveMenuItem leadingIcon={iconCircle} label="Alpha" />
           <ExpressiveMenuItem leadingIcon={iconSquare} label="Beta" />
           <ExpressiveMenuItem leadingIcon={iconTriangle} label="Charlie" />
@@ -485,8 +485,8 @@ let item3 = $state(false);
 </label>
 {#snippet demo()}
   <ExpressiveMenuGroup>
-    <ExpressiveMenu {vibrant}>
-      <ExpressiveMenuItem label="Circle" selected leadingIcon={iconCircle} />
+    <ExpressiveMenu {vibrant} label="My Menu">
+      <ExpressiveMenuItem label="Circle" details="Very round" selected leadingIcon={iconCircle} />
       <MenuDivider />
       <ExpressiveMenuItem label="Square" leadingIcon={iconSquare}>
         {#snippet trailing()}
@@ -497,8 +497,8 @@ let item3 = $state(false);
     </ExpressiveMenu>
     <ExpressiveMenu {vibrant}>
       <ExpressiveMenuItem label="Submenu" leadingIcon={iconCircle}>
-        {#snippet submenu()}
-          <ExpressiveMenu {vibrant}>
+        {#snippet submenu(open)}
+          <ExpressiveMenu {open} {vibrant}>
             <ExpressiveMenuItem
               label="Item 1"
               selected={item1}

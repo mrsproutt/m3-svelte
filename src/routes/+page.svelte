@@ -33,7 +33,7 @@
   import Demo23 from "virtual:demo/23";
   import Demo24 from "virtual:demo/24";
   import Demo25 from "virtual:demo/25";
-  import Demo26 from "virtual:demo/25";
+  import Demo26 from "virtual:demo/26";
   import { afterNavigate } from "$app/navigation";
 
   type DocData = {
