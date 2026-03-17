@@ -7,19 +7,64 @@
     children,
     vibrant = false,
     open = true,
+    submenu = false,
     label,
   }: {
     children: Snippet;
     vibrant?: boolean;
     open?: boolean;
     label?: string;
+    submenu?: boolean;
   } = $props();
+
+  let focused = $state<boolean>();
+
+  // hacky but it works
+  const focusEffect = (node: HTMLDivElement) => {
+    const parent = node.parentElement?.closest(".m3-container.expressive-menu");
+    const hasParent = parent?.contains(node);
+
+    const mouseEnter = () => (focused = false);
+    const mouseLeave = () => {
+      focused = true;
+
+      if (hasParent && parent?.matches(":hover"))
+        parent?.dispatchEvent(
+          new MouseEvent("mouseenter", {
+            relatedTarget: node,
+          }),
+        );
+    };
+
+    node.addEventListener("mouseleave", mouseLeave);
+    node.addEventListener("mouseenter", mouseEnter);
+
+    const destroy = () => {
+      node.removeEventListener("mouseleave", mouseLeave);
+      node.removeEventListener("mouseenter", mouseEnter);
+
+      if (hasParent) parent?.removeEventListener("mouseenter", mouseEnter);
+    };
+
+    if (!hasParent)
+      return {
+        destroy,
+      };
+
+    parent?.addEventListener("mouseenter", mouseEnter);
+
+    return {
+      destroy,
+    };
+  };
 </script>
 
 {#if open}
   <div
     class="m3-container expressive-menu"
     class:vibrant
+    class:focused
+    class:submenu
     in:slide={{
       easing: easeEmphasizedDecel,
       axis: "y",
@@ -28,6 +73,7 @@
     out:fade={{
       duration: 100,
     }}
+    use:focusEffect
   >
     {#if label}
       <span class="label">{label}</span>
@@ -49,8 +95,8 @@
     display: flex;
     flex-direction: column;
     padding: 4px;
-    border-radius: var(--m3-shape-large);
     background-color: var(--m3c-surface-container-low);
+    border-radius: var(--m3-shape-small);
     z-index: 2;
     box-shadow: var(--m3-elevation-3);
 
@@ -58,6 +104,12 @@
     scrollbar-width: thin;
     scroll-behavior: smooth;
     scrollbar-color: var(--m3-menuitem-icon) transparent;
+    transition: border-radius var(--m3-easing-fast-spatial);
+  }
+
+  .m3-container.focused:not(:has(.m3-container.expressive-menu.focused)):is(:has(:global(.submenu)), .submenu),
+  .m3-container:not(:has(:global(.m3-container.expressive-menu:hover))):is(:has(:global(.submenu)), .submenu):hover {
+    border-radius: var(--m3-shape-large) !important;
   }
 
   .m3-container > div {

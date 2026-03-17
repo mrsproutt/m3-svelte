@@ -19,18 +19,19 @@
     gap: 2px;
   }
 
+  /* important spam cause focus effect */
   .menu-group > :global(.m3-container) {
-    border-radius: var(--m3-shape-small);
+    border-radius: var(--m3-shape-small) !important;
     width: auto;
   }
 
   .menu-group > :global(.m3-container):first-child {
-    border-top-left-radius: var(--m3-shape-large);
-    border-top-right-radius: var(--m3-shape-large);
+    border-top-left-radius: var(--m3-shape-large) !important;
+    border-top-right-radius: var(--m3-shape-large) !important;
   }
 
   .menu-group > :global(.m3-container):last-child {
-    border-bottom-left-radius: var(--m3-shape-large);
-    border-bottom-right-radius: var(--m3-shape-large);
+    border-bottom-left-radius: var(--m3-shape-large) !important;
+    border-bottom-right-radius: var(--m3-shape-large) !important;
   }
 </style>

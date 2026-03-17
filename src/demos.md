@@ -498,7 +498,7 @@ let item3 = $state(false);
     <ExpressiveMenu {vibrant}>
       <ExpressiveMenuItem label="Submenu" leadingIcon={iconCircle}>
         {#snippet submenu(open)}
-          <ExpressiveMenu {open} {vibrant}>
+          <ExpressiveMenu {open} {vibrant} submenu>
             <ExpressiveMenuItem
               label="Item 1"
               selected={item1}
