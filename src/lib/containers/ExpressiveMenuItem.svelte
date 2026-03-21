@@ -3,22 +3,22 @@
   import type { IconifyIcon } from "@iconify/types";
 
   import iconArrowRight from "@ktibow/iconset-material-symbols/arrow-right";
-  import Icon from "$lib/misc/Icon.svelte";
   import { easeEmphasized } from "$lib/misc/easing";
   import { slide } from "svelte/transition";
+  import Icon from "$lib/misc/Icon.svelte";
 
   let {
     leadingIcon,
     trailingIcon,
     disabled = false,
     selected = false,
-    onclick,
     label,
     details,
     submenuOpen = $bindable(false),
     badge,
     submenu,
     trailing,
+    onclick,
   }: {
     leadingIcon?: IconifyIcon;
     trailingIcon?: IconifyIcon;
@@ -33,93 +33,94 @@
     onclick?: (e: MouseEvent) => unknown;
   } = $props();
 
-  const autoclose = (node: HTMLDetailsElement) => {
+  const autoclose = (node: HTMLDivElement) => {
     const close = (e: MouseEvent) => {
-      if (node.contains(e.target as Element)) return;
-
-      submenuOpen = false;
-    };
-    const click = (e: MouseEvent) => {
-      e.preventDefault();
-      if (node.querySelector("& > summary") === e.target) return (submenuOpen = !submenuOpen);
-
-      close(e);
+      if (!node.contains(e.target as HTMLElement)) submenuOpen = false;
     };
 
     window.addEventListener("click", close);
-    node.addEventListener("click", click);
 
     return {
       destroy() {
         window.removeEventListener("click", close);
-        node.removeEventListener("click", click);
       },
     };
   };
 </script>
 
-{#snippet item()}
-  {#if leadingIcon}
-    <span
-      class="icon"
-      transition:slide={{
-        easing: easeEmphasized,
-        axis: "x",
-        duration: 200,
-      }}
-    >
-      <Icon icon={leadingIcon} size={20} />
-    </span>
-  {/if}
+<div class="m3-container" use:autoclose>
+  <button
+    type="button"
+    class="item m3-layer"
+    class:selected
+    {disabled}
+    onclick={(e: MouseEvent) => {
+      onclick?.(e);
 
-  <div class="label">
-    <span>{label}</span>
-
-    {#if details}
-      <span>{details}</span>
+      if (submenu) {
+        submenuOpen = !submenuOpen;
+        e.stopPropagation();
+      }
+    }}
+  >
+    {#if leadingIcon}
+      <span
+        class="icon"
+        transition:slide={{
+          easing: easeEmphasized,
+          axis: "x",
+          duration: 200,
+        }}
+      >
+        <Icon icon={leadingIcon} size={20} />
+      </span>
     {/if}
-  </div>
 
-  {#if badge}
-    {@render badge()}
-  {/if}
+    <div class="label">
+      <span>{label}</span>
 
-  {#if trailing && !submenu}
-    <div class="trailing">
-      {@render trailing()}
+      {#if details}
+        <span>{details}</span>
+      {/if}
+    </div>
+
+    {#if badge}
+      {@render badge()}
+    {/if}
+
+    {#if trailing && !submenu}
+      <div class="trailing">
+        {@render trailing()}
+      </div>
+    {/if}
+
+    {#if trailingIcon || submenu}
+      <span
+        class="icon"
+        transition:slide={{
+          easing: easeEmphasized,
+          axis: "x",
+          duration: 200,
+        }}
+      >
+        <Icon icon={submenu ? iconArrowRight : (trailingIcon as IconifyIcon)} size={20} />
+      </span>
+    {/if}
+  </button>
+
+  {#if submenu}
+    <div class="menu">
+      {@render submenu(submenuOpen)}
     </div>
   {/if}
-
-  {#if trailingIcon || submenu}
-    <span
-      class="icon"
-      transition:slide={{
-        easing: easeEmphasized,
-        axis: "x",
-        duration: 200,
-      }}
-    >
-      <Icon icon={submenu ? iconArrowRight : (trailingIcon as IconifyIcon)} size={20} />
-    </span>
-  {/if}
-{/snippet}
-
-{#if submenu}
-  <!-- measure distance from page sides -->
-  <details class="align-x} align-y}" open use:autoclose>
-    <summary class="item m3-layer">
-      {@render item()}
-    </summary>
-
-    {@render submenu(submenuOpen)}
-  </details>
-{:else}
-  <button type="button" class="item m3-layer" class:selected {disabled} {onclick}>
-    {@render item()}
-  </button>
-{/if}
+</div>
 
 <style>
+  .m3-container {
+    anchor-scope: --m3-menu-anchor;
+    anchor-name: --m3-menu-anchor;
+  }
+
   .item {
     @apply --m3-label-large;
     @apply --m3-focus-inward;
@@ -131,6 +132,7 @@
     padding: 0 12px;
     height: 48px;
     gap: 8px;
+    width: 100%;
     white-space: nowrap;
 
     border: none;
@@ -160,14 +162,12 @@
     color: var(--m3-menuitem-on-selected);
   }
 
-  .item:first-child,
-  details:first-child > .item {
+  .m3-container:first-child > .item {
     border-top-left-radius: var(--m3-shape-medium);
     border-top-right-radius: var(--m3-shape-medium);
   }
 
-  .item:last-child,
-  details > .item {
+  .m3-container:last-child > .item {
     border-bottom-left-radius: var(--m3-shape-medium);
     border-bottom-right-radius: var(--m3-shape-medium);
   }
@@ -205,32 +205,8 @@
     color: --translucent(var(--m3-menuitem-text), 0.38);
     cursor: auto;
   }
+
   .item:disabled > .icon > :global(svg) {
     color: --translucent(var(--m3-menuitem-text), 0.38);
-  }
-
-  details {
-    display: flex;
-  }
-
-  summary {
-    flex: auto;
-  }
-
-  details > :global(:not(summary)) :global {
-    position: absolute !important;
-    z-index: 9999999;
-    details.align-inner > & {
-      left: 0;
-    }
-    details.align-right > & {
-      right: 0;
-    }
-    details.align-down > & {
-      top: 100%;
-    }
-    details.align-up > & {
-      bottom: 100%;
-    }
   }
 </style>

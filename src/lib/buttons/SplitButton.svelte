@@ -6,28 +6,24 @@
 
   let {
     variant,
-    x = "inner",
-    y = "down",
     menuOpen = $bindable(false),
     children,
     menu,
     ...extra
   }: {
     variant: "elevated" | "filled" | "tonal" | "outlined";
-    x?: "inner" | "right";
-    y?: "down" | "up";
     menuOpen?: boolean;
     children: Snippet;
     menu: Snippet<[boolean]>;
   } & ButtonAttrs = $props();
 
-  const autoclose = (node: HTMLDetailsElement) => {
-    const close = (e: Event) => {
-      if (node.contains(e.target as Element)) return;
-
-      node.open = false;
+  const autoclose = (node: HTMLDivElement) => {
+    const close = (e: MouseEvent) => {
+      if (!node.contains(e.target as HTMLElement)) menuOpen = false;
     };
+
     window.addEventListener("click", close);
+
     return {
       destroy() {
         window.removeEventListener("click", close);
@@ -36,16 +32,19 @@
   };
 </script>
 
-<div class="m3-container {variant}">
-  <button type="button" class="split m3-layer" {...extra}>
+<div class="m3-container {variant}" use:autoclose>
+  <button class="split m3-layer button" {...extra}>
     {@render children()}
   </button>
-  <details class="align-{x} align-{y}" bind:open={menuOpen} use:autoclose>
-    <summary class="split m3-layer">
-      <Icon icon={iconExpand} size={22} />
-    </summary>
-    {@render menu(menuOpen)}
-  </details>
+  <button
+    class="split m3-layer toggle"
+    class:open={menuOpen}
+    onclick={() => (menuOpen = !menuOpen)}
+  >
+    <Icon icon={iconExpand} size={22} />
+  </button>
+
+  {@render menu(menuOpen)}
 </div>
 
 <style>
@@ -58,9 +57,10 @@
   }
 
   .m3-container {
-    display: inline-grid;
-    grid-template-columns: 1fr auto;
+    display: flex;
+    width: fit-content;
     gap: 0.125rem;
+    anchor-scope: --m3-menu-anchor;
 
     &.elevated .split {
       background-color: var(--m3c-surface-container-low);
@@ -106,7 +106,7 @@
       border-radius var(--m3-easing-fast);
   }
 
-  button {
+  .button {
     @apply --m3-label-large;
     padding-inline-start: 1rem;
     padding-inline-end: 0.75rem;
@@ -126,11 +126,7 @@
     }
   }
 
-  details {
-    display: flex;
-    position: relative;
-  }
-  summary {
+  .toggle {
     width: 3rem;
 
     --inner-shape: var(--m3-split-button-inner-shape);
@@ -139,12 +135,13 @@
     border-end-start-radius: var(--inner-shape);
     border-start-end-radius: var(--outer-shape);
     border-end-end-radius: var(--outer-shape);
+    anchor-name: --m3-menu-anchor;
 
     &:hover,
     &:active {
       --inner-shape: var(--m3-split-button-half-shape);
     }
-    details[open] & {
+    &.open {
       --inner-shape: var(--m3-split-button-outer-shape);
       &::after {
         opacity: 0.08;
@@ -161,21 +158,6 @@
       transition:
         rotate var(--m3-easing-fast),
         translate var(--m3-easing-fast);
-    }
-  }
-  details > :global(:not(summary)) :global {
-    position: absolute !important;
-    details.align-inner > & {
-      left: 0;
-    }
-    details.align-right > & {
-      right: 0;
-    }
-    details.align-down > & {
-      top: 100%;
-    }
-    details.align-up > & {
-      bottom: 100%;
     }
   }
 

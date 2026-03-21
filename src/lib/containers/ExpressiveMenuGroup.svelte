@@ -20,17 +20,17 @@
   }
 
   /* important spam cause focus effect */
-  .menu-group > :global(.m3-container) {
+  .menu-group > :global(.m3-container.expressive-menu) {
     border-radius: var(--m3-shape-small) !important;
     width: auto;
   }
 
-  .menu-group > :global(.m3-container):first-child {
+  .menu-group > :global(.m3-container.expressive-menu):first-child {
     border-top-left-radius: var(--m3-shape-large) !important;
     border-top-right-radius: var(--m3-shape-large) !important;
   }
 
-  .menu-group > :global(.m3-container):last-child {
+  .menu-group > :global(.m3-container.expressive-menu):last-child {
     border-bottom-left-radius: var(--m3-shape-large) !important;
     border-bottom-right-radius: var(--m3-shape-large) !important;
   }

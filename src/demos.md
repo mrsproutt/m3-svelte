@@ -186,12 +186,7 @@ let iconType: "none" | "left" | "full" = $state("none");
 
 {#snippet demo()}
   <div>
-    <SplitButton
-      {variant}
-      x={position.startsWith("inner") ? "inner" : "right"}
-      y={position.endsWith("down") ? "down" : "up"}
-      onclick={() => {}}
-    >
+    <SplitButton {variant} onclick={() => {}}>
       {#if iconType == "none"}
         Hello
       {:else if iconType == "left"}
@@ -200,7 +195,12 @@ let iconType: "none" | "left" | "full" = $state("none");
         <Icon icon={iconCircle} />
       {/if}
       {#snippet menu(open)}
-        <ExpressiveMenu {open}>
+        <ExpressiveMenu
+          {open}
+          x={position.startsWith("inner") ? "start" : "end"}
+          y={position.endsWith("down") ? "down" : "up"}
+          anchored
+        >
           <ExpressiveMenuItem leadingIcon={iconCircle} label="Alpha" />
           <ExpressiveMenuItem leadingIcon={iconSquare} label="Beta" />
           <ExpressiveMenuItem leadingIcon={iconTriangle} label="Charlie" />
@@ -517,6 +517,15 @@ let item3 = $state(false);
               trailingIcon={item3 ? iconCheck : undefined}
               onclick={() => (item3 = !item3)}
             />
+            <MenuDivider />
+            <ExpressiveMenuItem label="Sub-Submenu">
+              {#snippet submenu(open)}
+                <ExpressiveMenu {open} {vibrant} submenu label="Sub-Submenu">
+                  <ExpressiveMenuItem label="Sub item 1" />
+                  <ExpressiveMenuItem label="Sub item 2" />
+                </ExpressiveMenu>
+              {/snippet}
+            </ExpressiveMenuItem>
           </ExpressiveMenu>
         {/snippet}
       </ExpressiveMenuItem>

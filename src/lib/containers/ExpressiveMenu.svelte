@@ -8,63 +8,77 @@
     vibrant = false,
     open = true,
     submenu = false,
+    anchored = false,
     label,
+    x,
+    y,
   }: {
     children: Snippet;
     vibrant?: boolean;
     open?: boolean;
     label?: string;
     submenu?: boolean;
+    anchored?: boolean;
+    x?: "start" | "end";
+    y?: "down" | "up";
   } = $props();
 
   let focused = $state<boolean>();
 
+  // support for nested submenus
+  const getParents = (node: HTMLDivElement) => {
+    const parent = node.parentElement?.closest(".m3-container.expressive-menu") as HTMLDivElement;
+    const parents: HTMLDivElement[] = [];
+
+    if (parent?.contains(node)) {
+      parents.push(parent);
+      parents.push(...getParents(parent as HTMLDivElement));
+    }
+
+    return parents;
+  };
+
   // hacky but it works
   const focusEffect = (node: HTMLDivElement) => {
-    const parent = node.parentElement?.closest(".m3-container.expressive-menu");
-    const hasParent = parent?.contains(node);
+    const parents = getParents(node);
 
     const mouseEnter = () => (focused = false);
     const mouseLeave = () => {
       focused = true;
 
-      if (hasParent && parent?.matches(":hover"))
-        parent?.dispatchEvent(
-          new MouseEvent("mouseenter", {
-            relatedTarget: node,
-          }),
-        );
+      for (const parent of parents) {
+        if (parent.matches(":hover"))
+          parent?.dispatchEvent(
+            new MouseEvent("mouseenter", {
+              relatedTarget: node,
+            }),
+          );
+      }
     };
 
     node.addEventListener("mouseleave", mouseLeave);
     node.addEventListener("mouseenter", mouseEnter);
 
-    const destroy = () => {
-      node.removeEventListener("mouseleave", mouseLeave);
-      node.removeEventListener("mouseenter", mouseEnter);
-
-      if (hasParent) parent?.removeEventListener("mouseenter", mouseEnter);
-    };
-
-    if (!hasParent)
-      return {
-        destroy,
-      };
-
-    parent?.addEventListener("mouseenter", mouseEnter);
+    for (const parent of parents) parent?.addEventListener("mouseenter", mouseEnter);
 
     return {
-      destroy,
+      destroy: () => {
+        node.removeEventListener("mouseleave", mouseLeave);
+        node.removeEventListener("mouseenter", mouseEnter);
+
+        for (const parent of parents) parent?.removeEventListener("mouseenter", mouseEnter);
+      },
     };
   };
 </script>
 
 {#if open}
   <div
-    class="m3-container expressive-menu"
+    class="m3-container expressive-menu {x ? 'anchor-' + x : ''} {y ? 'anchor-' + y : ''}"
     class:vibrant
     class:focused
     class:submenu
+    class:anchored
     in:slide={{
       easing: easeEmphasizedDecel,
       axis: "y",
@@ -108,7 +122,8 @@
   }
 
   .m3-container.focused:not(:has(.m3-container.expressive-menu.focused)):is(:has(:global(.submenu)), .submenu),
-  .m3-container:not(:has(:global(.m3-container.expressive-menu:hover))):is(:has(:global(.submenu)), .submenu):hover {
+  .m3-container:not(:has(:global(.m3-container.expressive-menu:hover))):is(:has(:global(.submenu)), .submenu):hover,
+  :global(:not(.m3-container.expressive-menu)) .m3-container:not(.submenu) {
     border-radius: var(--m3-shape-large) !important;
   }
 
@@ -118,6 +133,33 @@
     display: flex;
     gap: 4px;
     flex-direction: column;
+  }
+
+  .m3-container.anchored,
+  .m3-container.submenu {
+    position: fixed;
+    position-anchor: --m3-menu-anchor;
+  }
+
+  .m3-container.submenu {
+    left: anchor(end);
+    top: anchor(start);
+  }
+
+  .m3-container.anchor-up {
+    bottom: anchor(start);
+  }
+
+  .m3-container.anchor-down {
+    top: anchor(end);
+  }
+
+  .m3-container.anchor-end {
+    right: anchor(end);
+  }
+
+  .m3-container.anchor-start {
+    left: anchor(start);
   }
 
   .m3-container.vibrant {

@@ -18,6 +18,9 @@ export { default as Dialog } from "./containers/Dialog.svelte";
 export { default as ListItem } from "./containers/ListItem.svelte";
 export { default as Menu } from "./containers/Menu.svelte";
 export { default as MenuItem } from "./containers/MenuItem.svelte";
+export { default as ExpressiveMenu } from "./containers/ExpressiveMenu.svelte";
+export { default as ExpressiveMenuItem } from "./containers/ExpressiveMenuItem.svelte";
+export { default as ExpressiveMenuGroup } from "./containers/ExpressiveMenuGroup.svelte";
 export { default as Snackbar, snackbar } from "./containers/Snackbar.svelte";
 export { default as SnackbarItem } from "./containers/SnackbarItem.svelte";
 
