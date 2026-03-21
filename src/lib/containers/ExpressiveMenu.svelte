@@ -124,7 +124,7 @@
   .m3-container.focused:not(:has(.m3-container.expressive-menu.focused)):is(:has(:global(.submenu)), .submenu),
   .m3-container:not(:has(:global(.m3-container.expressive-menu:hover))):is(:has(:global(.submenu)), .submenu):hover,
   :global(:not(.m3-container.expressive-menu)) .m3-container:not(.submenu) {
-    border-radius: var(--m3-shape-large) !important;
+    border-radius: var(--m3-shape-large);
   }
 
   .m3-container > div {
