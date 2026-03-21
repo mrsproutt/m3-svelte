@@ -18,7 +18,7 @@
   } & ButtonAttrs = $props();
 
   const autoclose = (node: HTMLDivElement) => {
-    const close = (e: MouseEvent) => {
+  const close = (e: MouseEvent) => {
       if (!node.contains(e.target as HTMLElement)) menuOpen = false;
     };
 

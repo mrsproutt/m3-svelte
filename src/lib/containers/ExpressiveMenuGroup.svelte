@@ -19,7 +19,6 @@
     gap: 2px;
   }
 
-  /* important spam cause focus effect */
   .menu-group > :global(.m3-container.expressive-menu) {
     border-radius: var(--m3-shape-small) !important;
     width: auto;

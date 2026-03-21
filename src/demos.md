@@ -498,7 +498,7 @@ let item3 = $state(false);
     <ExpressiveMenu {vibrant}>
       <ExpressiveMenuItem label="Submenu" leadingIcon={iconCircle}>
         {#snippet submenu(open)}
-          <ExpressiveMenu {open} {vibrant} submenu>
+          <ExpressiveMenu {open} submenu>
             <ExpressiveMenuItem
               label="Item 1"
               selected={item1}
@@ -520,7 +520,7 @@ let item3 = $state(false);
             <MenuDivider />
             <ExpressiveMenuItem label="Sub-Submenu">
               {#snippet submenu(open)}
-                <ExpressiveMenu {open} {vibrant} submenu label="Sub-Submenu">
+                <ExpressiveMenu {open} submenu label="Sub-Submenu">
                   <ExpressiveMenuItem label="Sub item 1" />
                   <ExpressiveMenuItem label="Sub item 2" />
                 </ExpressiveMenu>

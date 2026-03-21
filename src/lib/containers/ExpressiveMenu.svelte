@@ -162,7 +162,8 @@
     left: anchor(start);
   }
 
-  .m3-container.vibrant {
+  .m3-container.vibrant,
+  .m3-container.vibrant :global(.m3-container.expressive-menu) {
     --m3-menuitem-background: light-dark(
       var(--m3c-tertiary-container),
       var(--m3c-tertiary-container-subtle)

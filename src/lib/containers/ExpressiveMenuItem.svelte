@@ -130,7 +130,6 @@
     justify-content: center;
     height: --m3-density(3rem);
     padding: 0 12px;
-    height: 48px;
     gap: 8px;
     width: 100%;
     white-space: nowrap;
