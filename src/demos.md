@@ -156,6 +156,8 @@ Full demo:
 
 ```use
 SplitButton
+Menu
+MenuItem
 ExpressiveMenu
 ExpressiveMenuItem
 ```

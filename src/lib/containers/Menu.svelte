@@ -1,12 +1,26 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
 
-  let { children }: { children: Snippet } = $props();
+  let {
+    children,
+    anchored,
+    open = true,
+    x,
+    y,
+  }: {
+    children: Snippet;
+    anchored?: boolean;
+    open?: boolean;
+    x?: "start" | "end";
+    y?: "down" | "up";
+  } = $props();
 </script>
 
-<div class="m3-container">
-  {@render children()}
-</div>
+{#if open}
+  <div class="m3-container{x ? ' anchor-' + x : ''}{y ? ' anchor-' + y : ''}" class:anchored>
+    {@render children()}
+  </div>
+{/if}
 
 <style>
   @layer tokens {
@@ -25,5 +39,26 @@
     background-color: var(--m3c-surface-container);
     z-index: 2;
     box-shadow: var(--m3-elevation-2);
+  }
+
+  .m3-container.anchored {
+    position: fixed;
+    position-anchor: --m3-menu-anchor;
+  }
+
+  .m3-container.anchor-up {
+    bottom: anchor(start);
+  }
+
+  .m3-container.anchor-down {
+    top: anchor(end);
+  }
+
+  .m3-container.anchor-end {
+    right: anchor(end);
+  }
+
+  .m3-container.anchor-start {
+    left: anchor(start);
   }
 </style>

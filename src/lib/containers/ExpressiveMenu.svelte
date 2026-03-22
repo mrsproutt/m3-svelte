@@ -74,7 +74,7 @@
 
 {#if open}
   <div
-    class="m3-container expressive-menu {x ? 'anchor-' + x : ''} {y ? 'anchor-' + y : ''}"
+    class="m3-container expressive-menu{x ? ' anchor-' + x : ''}{y ? ' anchor-' + y : ''}"
     class:vibrant
     class:focused
     class:submenu

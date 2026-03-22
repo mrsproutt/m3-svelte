@@ -1,7 +1,7 @@
-<span class="divider"></span>
+<span></span>
 
 <style>
-  .divider {
+  span {
     height: 2px;
     margin: 2px 8px;
     background: var(--m3-menuitem-text);
