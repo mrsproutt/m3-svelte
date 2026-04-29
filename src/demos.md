@@ -319,6 +319,7 @@ let clickable = $state(false);
 ```
 
 ## List
+> Warning: Not updated to M3 Expressive
 
 Minimal demo:
 
@@ -414,6 +415,7 @@ let supporting = $derived(
 ```
 
 ## Menu
+> Warning: Not updated to M3 Expressive
 
 Minimal demo:
 
