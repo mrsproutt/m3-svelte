@@ -127,7 +127,7 @@
   }
 
   .toggle {
-    width: 40px;
+    width: --m3-density(2.5rem);
 
     --inner-shape: var(--m3-split-button-inner-shape);
     --outer-shape: var(--m3-split-button-outer-shape);
